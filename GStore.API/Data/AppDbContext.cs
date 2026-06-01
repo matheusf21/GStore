@@ -1,13 +1,14 @@
 using GStore.API.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using GStore.API.Data.Seeds;
 
 namespace GStore.API.Data;
 
 public class AppDbContext : IdentityDbContext<Usuario>
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> opt) : base(opt)
     {
     }
 
@@ -19,14 +20,20 @@ public class AppDbContext : IdentityDbContext<Usuario>
     {
         base.OnModelCreating(builder);
 
-            #region Configurações das tabelas
+        #region Configurações das Tabelas do Identity
         builder.Entity<Usuario>().ToTable("usuarios");
         builder.Entity<IdentityRole>().ToTable("perfis");
-        builder.Entity<IdentityUserRole<string>>().ToTable("usuarios_perfis");
-        builder.Entity<IdentityUserClaim<string>>().ToTable("usuarios_regras");
-        builder.Entity<IdentityUserToken<string>>().ToTable("usuarios_tokens");
-        builder.Entity<IdentityUserLogin<string>>().ToTable("usuarios_logins");
-        builder.Entity<IdentityUserClaim<string>>().ToTable("perfil_regras");
-            #endregion
+        builder.Entity<IdentityUserRole<string>>().ToTable("usuario_perfis");
+        builder.Entity<IdentityUserClaim<string>>().ToTable("usuario_regras");
+        builder.Entity<IdentityUserToken<string>>().ToTable("usuario_tokens");
+        builder.Entity<IdentityUserLogin<string>>().ToTable("usuario_logins");
+        builder.Entity<IdentityRoleClaim<string>>().ToTable("perfil_regras");
+        #endregion
+    
+        #region Objetos para mock de dados
+        SeedUsuario seedUsuario = new(builder);
+        SeedCategoria seedCategoria = new(builder);
+        SeedProduto seedProduto = new(builder);
+        #endregion
     }
 }
